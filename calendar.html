@@ -1,0 +1,211 @@
+
+<html>
+  <head>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css"
+   integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
+   crossorigin=""/>
+   <script src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js"
+   integrity="sha512-nMMmRyTVoLYqjP9hrbed9S+FzjZHW5gY1TWCHA5ckwXZBadntCNs8kEqAWdrb9O7rxbCaA4lKTIWjDXZxflOcA=="
+   crossorigin=""></script>
+	  <script src="https://apis.google.com/js/platform.js" async defer></script>
+  <script src="js/leaflet.extra-markers.min.js"></script>
+    <title>Air3Course</title>
+    <meta charset="utf-8" />
+  </head>
+  <body>
+    <p>Google Calendar API Quickstart</p>
+
+    <!--Add buttons to initiate auth sequence and sign out-->
+	  <div class="g-signin2" data-onsuccess="onSignIn2"></div>
+    <button id="authorize_button" style="display: none;">Authorize</button>
+    <button id="signout_button" style="display: none;">Sign Out</button>
+	<table>
+		
+		<td>
+			<div id="mapid" style="height: 450px;width:700px"></div>
+		</td>
+	</table>
+    <pre id="content" style="white-space: pre-wrap;"></pre>
+
+    <script type="text/javascript">
+	    function onSignIn2(googleUser) {
+  var profile = googleUser.getBasicProfile();
+  console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+  console.log('Name: ' + profile.getName());
+  console.log('Image URL: ' + profile.getImageUrl());
+  console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+}
+	    
+      // Client ID and API key from the Developer Console
+      var CLIENT_ID = '742596433829-1k8ra0qrhfo9ci9sgupkg3jhlvo92go3.apps.googleusercontent.com';
+      var API_KEY =  prompt('test','AIzaSyBEwsGoGDd_gad-NZ9ugSQyMgt1IW0hYe0');
+
+      // Array of API discovery doc URLs for APIs used by the quickstart
+      var DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"];
+
+      // Authorization scopes required by the API; multiple scopes can be
+      // included, separated by spaces.
+      var SCOPES = "https://www.googleapis.com/auth/calendar.readonly";
+
+      var authorizeButton = document.getElementById('authorize_button');
+      var signoutButton = document.getElementById('signout_button');
+      var cpt_course = 0;
+      /**
+       *  On load, called to load the auth2 library and API client library.
+       */
+      function handleClientLoad() {
+        gapi.load('client:auth2', initClient);
+      }
+
+      /**
+       *  Initializes the API client library and sets up sign-in state
+       *  listeners.
+       */
+      function initClient() {
+        gapi.client.init({
+          apiKey: API_KEY,
+          clientId: CLIENT_ID,
+          discoveryDocs: DISCOVERY_DOCS,
+          scope: SCOPES
+        }).then(function () {
+          // Listen for sign-in state changes.
+          gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
+
+          // Handle the initial sign-in state.
+          updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+          authorizeButton.onclick = handleAuthClick;
+          signoutButton.onclick = handleSignoutClick;
+        }, function(error) {
+		alert("erreur apikey");
+          //appendPre(JSON.stringify(error, null, 2));
+        });
+      }
+ 
+      /**
+       *  Called when the signed in status changes, to update the UI
+       *  appropriately. After a sign-in, the API is called.
+       */
+      function updateSigninStatus(isSignedIn) {
+        if (isSignedIn) {
+          authorizeButton.style.display = 'none';
+          //signoutButton.style.display = 'block';
+          listUpcomingEvents();
+        } else {
+          //authorizeButton.style.display = 'block';
+          signoutButton.style.display = 'none';
+        }
+      }
+
+      /**
+       *  Sign in the user upon button click.
+       */
+      function handleAuthClick(event) {
+        gapi.auth2.getAuthInstance().signIn();
+	      //tests
+	updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get())
+      }
+
+      /**
+       *  Sign out the user upon button click.
+       */
+      function handleSignoutClick(event) {
+        gapi.auth2.getAuthInstance().signOut();
+      }
+
+      /**
+       * Append a pre element to the body containing the given message
+       * as its text node. Used to display the results of the API call.
+       *
+       * @param {string} message Text to be placed in pre element.
+       */
+      function appendPre(message) {
+        var pre = document.getElementById('content');
+        var textContent = document.createTextNode(message + '\n');
+        pre.appendChild(textContent);
+      }
+
+      /**
+       * Print the summary and start datetime/date of the next ten events in
+       * the authorized user's calendar. If no events are found an
+       * appropriate message is printed.
+       */
+      function listUpcomingEvents() {
+        gapi.client.calendar.events.list({
+          'calendarId': 'air3bordeaux33@gmail.com',
+          'timeMin': (new Date()).toISOString(),
+          'showDeleted': false,
+          'singleEvents': true,
+          'maxResults': 100,
+          'orderBy': 'startTime'
+        }).then(function(response) {
+          var events = response.result.items;
+          //appendPre('Upcoming events:');
+
+          if (events.length > 0) {
+            for (i = 0; i < events.length; i++) {
+              var event = events[i];
+		    if (event.summary.substr(0,8)=="[COURSE]"){
+			    var location = event.location.split(",");
+			    var longi= parseFloat(location[0]);
+			    var lat = parseFloat(location[1]);
+			    L.marker([longi, lat]).addTo(mymap).bindPopup(create_popup_info(event));
+		    }
+			  if (event.summary == "BISCATRAIL"){
+				L.marker([44.4412825,-1.2463926]).addTo(mymap).bindPopup(create_popup_info(event));
+				
+			  }
+			  if (event.summary =="10 KM D'ARCACHON"){
+				<!-- participant = []; -->
+				<!-- for (var att in event.attendees){if (event.attendees[att]['responseStatus'] == 'accepted'){participant.push(event.attendees[att]['email'])}}  -->
+				L.marker([44.6514231,-1.2066755]).addTo(mymap).bindPopup(create_popup_info(event))
+				<!-- "10Km Arcachon " + "<br>" + list_participant(event.attendees).join("<br>   -")); -->
+				
+			  }
+              var when = event.start.dateTime;
+              if (!when) {
+                when = event.start.date;
+              }
+			  
+              //appendPre(event.summary + ' (' + when + ')')
+            }
+          } 
+	if (cpt_course==0) {
+            appendPre('No upcoming events found.');
+          }
+        });
+      }
+	
+	function create_popup_info(this_event){
+		text = "<b>" + this_event.summary + "</b><br>"
+		text += "Date: " + this_event.start.dateTime.substring(0,10) + "<br>"
+		text += this_event.description.replace(/(\r\n|\n|\r)/g, '<br>') + "<br>"
+		text += "Participants: "
+		text +=	"<br>&nbsp;&nbsp;&nbsp;&nbsp - " + list_participant(this_event.attendees).join("<br>&nbsp;&nbsp;&nbsp;&nbsp - ")
+		return text
+	}
+	
+	function list_participant(attendees){
+		var participant = []
+		for (var att in attendees){
+			if (attendees[att]['responseStatus'] == 'accepted'){
+				participant.push(attendees[att]['email'])	
+			}
+		}
+		return participant
+	}
+	/// PARTIE LEAFLET
+	 var mymap = L.map('mapid').setView([44.89090425391711, -0.5438232421875001], 8);
+	 var toner = L.tileLayer('http://{s}.tile.stamen.com/toner-lite/{z}/{x}/{y}.png', {
+		maxZoom: 18,
+		attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+		});
+	toner.addTo(mymap);
+	///FIN PARTIE LEAFLET
+    </script>
+
+    <script async defer src="https://apis.google.com/js/api.js"
+      onload="this.onload=function(){};handleClientLoad()"
+      onreadystatechange="if (this.readyState === 'complete') this.onload()">
+    </script>
+  </body>
+</html>
