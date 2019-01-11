@@ -131,6 +131,17 @@
        * the authorized user's calendar. If no events are found an
        * appropriate message is printed.
        */
+var greenIcon = L.icon({
+    iconUrl: 'markertest.png',
+    shadowUrl: 'markertest.png',
+
+    iconSize:     [38, 95], // size of the icon
+    shadowSize:   [50, 64], // size of the shadow
+    iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+    shadowAnchor: [4, 62],  // the same for the shadow
+    popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+});
+	    
       function listUpcomingEvents() {
         gapi.client.calendar.events.list({
           'calendarId': 'air3bordeaux33@gmail.com',
@@ -151,7 +162,7 @@
 			    var location = event.location.split(",");
 			    var longi= parseFloat(location[0]);
 			    var lat = parseFloat(location[1]);
-			    L.marker([longi, lat]).addTo(mymap).bindPopup(create_popup_info(event));
+			    L.marker([longi, lat],{icon: greenIcon}).addTo(mymap).bindPopup(create_popup_info(event));
 		    }
 			  if (event.summary == "BISCATRAIL"){
 				L.marker([44.4412825,-1.2463926]).addTo(mymap).bindPopup(create_popup_info(event));
