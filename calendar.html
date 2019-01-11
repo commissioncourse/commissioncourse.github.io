@@ -131,8 +131,16 @@
        * the authorized user's calendar. If no events are found an
        * appropriate message is printed.
        */
-var greenIcon = L.icon({
-    iconUrl: 'markertest_2.png',
+var trailIcon = L.icon({
+    iconUrl: 'marker_trail.png',
+    iconSize:     [19, 
+		  35],
+	iconAnchor:   [10, 35]// size of the icon
+   
+   
+});
+var routeIcon = L.icon({
+    iconUrl: 'marker_route.png',
     iconSize:     [19, 
 		  35],
 	iconAnchor:   [10, 35]// size of the icon
@@ -160,7 +168,9 @@ var greenIcon = L.icon({
 			    var location = event.location.split(",");
 			    var longi= parseFloat(location[0]);
 			    var lat = parseFloat(location[1]);
-			    L.marker([longi, lat],{icon: greenIcon}).addTo(mymap).bindPopup(create_popup_info(event));
+			    if (event.description.indexOf("Trail")>=0){  
+			    L.marker([longi, lat],{icon: marker_trail}).addTo(mymap).bindPopup(create_popup_info(event));}
+			    else { L.marker([longi, lat],{icon: marker_route}).addTo(mymap).bindPopup(create_popup_info(event));}}
 		    }
 			  if (event.summary == "BISCATRAIL"){
 				L.marker([44.4412825,-1.2463926]).addTo(mymap).bindPopup(create_popup_info(event));
