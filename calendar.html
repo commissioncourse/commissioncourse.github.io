@@ -169,8 +169,8 @@ var routeIcon = L.icon({
 			    var longi= parseFloat(location[0]);
 			    var lat = parseFloat(location[1]);
 			    if (event.description.indexOf("Trail")>=0){  
-			    L.marker([longi, lat],{icon: marker_trail}).addTo(mymap).bindPopup(create_popup_info(event));}
-			    else { L.marker([longi, lat],{icon: marker_route}).addTo(mymap).bindPopup(create_popup_info(event));}
+			    L.marker([longi, lat],{icon: trailIcon}).addTo(mymap).bindPopup(create_popup_info(event));}
+			    else { L.marker([longi, lat],{icon: routeIcon}).addTo(mymap).bindPopup(create_popup_info(event));}
 		    }
 			  if (event.summary == "BISCATRAIL"){
 				L.marker([44.4412825,-1.2463926]).addTo(mymap).bindPopup(create_popup_info(event));
