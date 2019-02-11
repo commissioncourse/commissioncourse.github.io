@@ -184,16 +184,16 @@ var routeIconPast = L.icon({
 			    trail = "t" ? event.description.indexOf("Trail")>=0 : "r"
 			    dateC = "p" ? event.start.dateTime < (new Date()).toISOString() : "f"
 			    switch(trail+dateC){
-			    	case tp:
+			    	case "tp":
 					eventicon = trailIconPast;
 					break;
-				case tf:
+				case "tf":
 					eventicon = trailIcon;
 					break;
-				case rp:
+				case "rp":
 					eventicon = routeIconPast;
 					break;
-				case rf:
+				case "rf":
 					eventicon = routeIcon;
 					break;
 			        default:
