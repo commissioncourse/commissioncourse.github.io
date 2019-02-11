@@ -132,6 +132,14 @@
        * appropriate message is printed.
        */
 var trailIcon = L.icon({
+    iconUrl: 'marker_Trail.png',
+    iconSize:     [25, 
+		  35],
+	iconAnchor:   [10, 35]// size of the icon
+   
+   
+});
+var trailIconPast = L.icon({
     iconUrl: 'marker_Trail_past.png',
     iconSize:     [25, 
 		  35],
@@ -141,6 +149,14 @@ var trailIcon = L.icon({
 });
 var routeIcon = L.icon({
     iconUrl: 'marker_route.png',
+    iconSize:     [25, 
+		  35],
+	iconAnchor:   [10, 35]// size of the icon
+   
+   
+});
+var routeIconPast = L.icon({
+    iconUrl: 'marker_route_past.png',
     iconSize:     [25, 
 		  35],
 	iconAnchor:   [10, 35]// size of the icon
@@ -165,13 +181,36 @@ var routeIcon = L.icon({
             for (i = 0; i < events.length; i++) {
               var event = events[i];
 		    if (event.summary.substr(0,8)=="[COURSE]"){
+			    trail = "t" ? event.description.indexOf("Trail")>=0 : "r"
+			    dateC = "p" ? event.start.dateTime < (new Date()).toISOString() : "f"
+			    switch(trail+dateC){
+			    	case tp:
+					eventicon = trailIconPast;
+					break;
+				case tf:
+					eventicon = trailIcon;
+					break;
+				case rp:
+					eventicon = routeIconPast;
+					break;
+				case rf:
+					eventicon = routeIcon;
+					break;
+			        default:
+					eventicon = routeIcon;
+					break;
+			    }
+			    
+			    
 			    cpt_course+=1;
+			    if event.description.indexOf("Trail")>=0
 			    var location = event.location.split(",");
 			    var longi= parseFloat(location[0]);
 			    var lat = parseFloat(location[1]);
-			    if (event.description.indexOf("Trail")>=0){  
-			    L.marker([longi, lat],{icon: trailIcon}).addTo(mymap).bindPopup(create_popup_info(event));}
-			    else { L.marker([longi, lat],{icon: routeIcon}).addTo(mymap).bindPopup(create_popup_info(event));}
+			    L.marker([longi, lat],{icon: eventicon}).addTo(mymap).bindPopup(create_popup_info(event));
+			    //if (event.description.indexOf("Trail")>=0){  
+			    //L.marker([longi, lat],{icon: trailIcon}).addTo(mymap).bindPopup(create_popup_info(event));}
+			    //else { L.marker([longi, lat],{icon: routeIcon}).addTo(mymap).bindPopup(create_popup_info(event));}
 		    }
 			  
               var when = event.start.dateTime;
