@@ -151,7 +151,8 @@ var routeIcon = L.icon({
       function listUpcomingEvents() {
         gapi.client.calendar.events.list({
           'calendarId': 'air3bordeaux33@gmail.com',
-          'timeMin': (new Date()).toISOString(),
+	  'timeMin': "2019-01-01T00:00:01.000Z",
+          //'timeMin': (new Date()).toISOString(),
           'showDeleted': false,
           'singleEvents': true,
           'maxResults': 100,
