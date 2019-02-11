@@ -190,7 +190,7 @@ var routeIcon = L.icon({
 	
 	function create_popup_info(this_event){
 		past = ""
-		if (this_event.start.dateTime < new Date()){past = " PASSE"}
+		if ( this_event.start.dateTime < (new Date()).toISOString() ){past = " PASSE"}
 		text = "<b>" + this_event.summary + "</b><br>"
 		text += "Date: " + this_event.start.dateTime.substring(0,10) + past + "<br>"
 		text += this_event.description.replace(/(\r\n|\n|\r)/g, '<br>') + "<br>"
