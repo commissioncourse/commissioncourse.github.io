@@ -181,8 +181,8 @@ var routeIconPast = L.icon({
             for (i = 0; i < events.length; i++) {
               var event = events[i];
 		    if (event.summary.substr(0,8)=="[COURSE]"){
-			    trail = "t" ? event.description.indexOf("Trail")>=0 : "r"
-			    dateC = "p" ? event.start.dateTime < (new Date()).toISOString() : "f"
+			    trail = event.description.indexOf("Trail")>=0 ? "t"  : "r"
+			    dateC = event.start.dateTime < (new Date()).toISOString() ? "p" : "f"
 			    switch(trail+dateC){
 			    	case "tp":
 					eventicon = trailIconPast;
